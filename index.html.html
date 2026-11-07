@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarea 1: Secretaría Anticorrupción y Buen Gobierno</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter & Merriweather -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:ital,wght@0,700;1,300&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        institutional: {
+                            800: '#0F2C59',
+                            900: '#071939',
+                            gold: '#C5A880',
+                            accent: '#D4AF37'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Merriweather', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Print Styles Optimization */
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            body {
+                background-color: white !important;
+                color: black !important;
+                font-size: 11pt;
+            }
+            .page-break {
+                page-break-before: always;
+            }
+            .shadow-lg, .shadow-xl, .shadow-2xl {
+                box-shadow: none !important;
+            }
+            .border-print {
+                border: 1px solid #e2e8f0 !important;
+            }
+            .tab-content {
+                display: block !important;
+                opacity: 1 !important;
+            }
+            .accordion-body {
+                max-height: none !important;
+                display: block !important;
+            }
+        }
+
+        /* Smooth tab transition */
+        .tab-content {
+            transition: opacity 0.2s ease-in-out;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col justify-between">
+
+    <!-- Top Action Bar (Hide on Print) -->
+    <header class="no-print bg-slate-900 text-white sticky top-0 z-50 shadow-md">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-graduation-cap text-yellow-400 text-xl"></i>
+                <span class="font-semibold tracking-wide text-sm md:text-base">Tarea 1: Marco Jurídico e Infografía Digital</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <button onclick="toggleCoverEdit()" class="bg-slate-700 hover:bg-slate-600 text-white text-xs md:text-sm px-3 py-1.5 rounded-lg flex items-center gap-2 transition">
+                    <i class="fa-solid fa-pen-to-square"></i> Editar Portada
+                </button>
+                <button onclick="exportPDF()" class="bg-amber-600 hover:bg-amber-500 text-white font-medium text-xs md:text-sm px-4 py-1.5 rounded-lg flex items-center gap-2 shadow transition">
+                    <i class="fa-solid fa-file-pdf"></i> Imprimir / Exportar a PDF
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-5xl mx-auto px-4 py-6 md:py-10 flex-grow w-full">
+
+        <!-- ================= PORTADA SECTION ================= -->
+        <section id="portada-section" class="bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden mb-8 relative">
+            <!-- Institutional Header Bar -->
+            <div class="bg-institutional-900 h-4 border-b-4 border-amber-500"></div>
+
+            <div class="p-6 md:p-10">
+                <!-- Cover Header -->
+                <div class="flex flex-col md:flex-row justify-between items-center pb-6 border-b border-slate-200 gap-6">
+                    <div class="text-center md:text-left flex-1">
+                        <span class="bg-amber-100 text-amber-800 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full inline-block mb-2">
+                            Administración Pública Federal
+                        </span>
+                        <h1 class="text-2xl md:text-4xl font-extrabold text-institutional-900 leading-tight font-serif">
+                            Secretaría Anticorrupción y Buen Gobierno
+                        </h1>
+                        <p class="text-slate-500 text-sm md:text-base mt-1">
+                            Análisis del Art. 26 y 37 de la Ley Orgánica de la APF
+                        </p>
+                    </div>
+
+                    <!-- Dynamic Logo Box -->
+                    <div class="flex flex-col items-center justify-center">
+                        <div id="logo-preview-container" class="w-24 h-24 md:w-28 md:h-28 bg-slate-100 border-2 border-dashed border-slate-300 rounded-2xl flex flex-col items-center justify-center p-2 text-center relative group">
+                            <img id="custom-logo" src="https://placehold.co/120x120/0f2c59/FFFFFF?text=LOGO+U" alt="Logotipo Institucional" class="w-full h-full object-contain rounded-xl">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Student & Assignment Details Metadata Card -->
+                <div class="mt-6 bg-slate-50 rounded-xl p-5 border border-slate-200 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-xs uppercase tracking-wider text-slate-400 font-bold">Estudiante</p>
+                        <p id="disp-student" class="font-semibold text-slate-800 text-base md:text-lg">[Nombre del Alumno/a]</p>
+                    </div>
+                    <div>
+                        <p class="text-xs uppercase tracking-wider text-slate-400 font-bold">Asignatura</p>
+                        <p id="disp-subject" class="font-semibold text-slate-800 text-base md:text-lg">Derecho Administrativo / Gobierno</p>
+                    </div>
+                    <div>
+                        <p class="text-xs uppercase tracking-wider text-slate-400 font-bold">Docente</p>
+                        <p id="disp-teacher" class="font-semibold text-slate-800 text-base md:text-lg">[Nombre del Profesor/a]</p>
+                    </div>
+                    <div>
+                        <p class="text-xs uppercase tracking-wider text-slate-400 font-bold">Fecha de Entrega</p>
+                        <p id="disp-date" class="font-semibold text-slate-800 text-base md:text-lg">Viernes, 10:00 PM</p>
+                    </div>
+                </div>
+
+                <!-- Editable Form Modal/Panel (Hidden by Default) -->
+                <div id="cover-edit-panel" class="no-print hidden mt-6 bg-amber-50 border border-amber-200 rounded-xl p-4">
+                    <h3 class="text-sm font-bold text-amber-900 mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-sliders"></i> Personalizar Datos de la Portada
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Nombre del Alumno/a:</label>
+                            <input type="text" id="input-student" placeholder="Tu Nombre Completo" class="w-full px-3 py-1.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Asignatura:</label>
+                            <input type="text" id="input-subject" placeholder="Nombre de la Materia" class="w-full px-3 py-1.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Docente:</label>
+                            <input type="text" id="input-teacher" placeholder="Nombre del Docente" class="w-full px-3 py-1.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Fecha:</label>
+                            <input type="text" id="input-date" placeholder="Fecha u Horario de Entrega" class="w-full px-3 py-1.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">URL de Logotipo (Opcional):</label>
+                            <input type="text" id="input-logo" placeholder="https://ejemplo.com/logo.png" class="w-full px-3 py-1.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        </div>
+                    </div>
+                    <div class="mt-3 text-right">
+                        <button onclick="saveCoverDetails()" class="bg-amber-600 hover:bg-amber-700 text-white px-4 py-1.5 rounded-lg text-xs font-bold">
+                            Guardar Cambios
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECCIÓN 1: ¿A QUÉ SE DEDICA? (GENERAL) ================= -->
+        <section class="bg-white rounded-2xl shadow-md border border-slate-200 p-6 md:p-8 mb-8">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-base">1</span>
+                <h2 class="text-xl md:text-2xl font-bold text-institutional-900">Propósito General y Fundamento Legal</h2>
+            </div>
+            
+            <p class="text-slate-600 leading-relaxed mb-6 text-sm md:text-base">
+                La <strong>Secretaría Anticorrupción y Buen Gobierno</strong> es la dependencia del Poder Ejecutivo Federal centralizado (prevista en los Arts. 26 y 37 de la LOAPF) encargada de garantizar la <strong>honestidad, integridad y transparencia</strong> en el servicio público. Su propósito general es prevenír, auditar y erradicar prácticas corruptas, promoviendo una administración pública eficiente y orientada a los resultados ciudadanos.
+            </p>
+
+            <!-- Quick Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl flex items-start gap-3">
+                    <div class="text-blue-600 text-2xl mt-1"><i class="fa-solid fa-shield-halved"></i></div>
+                    <div>
+                        <h4 class="font-bold text-slate-800 text-sm">Prevención y Control</h4>
+                        <p class="text-xs text-slate-500 mt-0.5">Diseña políticas de integridad pública y fortalece los sistemas de control interno en las instituciones.</p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl flex items-start gap-3">
+                    <div class="text-amber-600 text-2xl mt-1"><i class="fa-solid fa-magnifying-glass-dollar"></i></div>
+                    <div>
+                        <h4 class="font-bold text-slate-800 text-sm">Auditoría y Vigilancia</h4>
+                        <p class="text-xs text-slate-500 mt-0.5">Fiscaliza el uso adecuado del presupuesto federal y los contratos de obra y adquisiciones.</p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl flex items-start gap-3">
+                    <div class="text-emerald-600 text-2xl mt-1"><i class="fa-solid fa-gavel"></i></div>
+                    <div>
+                        <h4 class="font-bold text-slate-800 text-sm">Rendición y Sanción</h4>
+                        <p class="text-xs text-slate-500 mt-0.5">Investiga irregularidades, sanciona faltas no graves y denuncia faltas graves ante las autoridades.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECCIÓN 2: FUNCIONES PRINCIPALES (SINTETIZADAS) ================= -->
+        <section class="bg-white rounded-2xl shadow-md border border-slate-200 p-6 md:p-8 mb-8">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-base">2</span>
+                <h2 class="text-xl md:text-2xl font-bold text-institutional-900">Funciones Específicas por Ejes (Art. 37)</h2>
+            </div>
+
+            <!-- Tab Navigation (Interactive) -->
+            <div class="no-print flex border-b border-slate-200 mb-6 overflow-x-auto pb-1 gap-2 text-sm font-medium">
+                <button onclick="switchTab('anticorrupcion')" id="tab-anticorrupcion" class="tab-btn px-4 py-2 border-b-2 border-amber-600 text-amber-600 font-bold whitespace-nowrap">
+                    <i class="fa-solid fa-hand-shake-slash mr-1"></i> Anticorrupción e Integridad
+                </button>
+                <button onclick="switchTab('auditoria')" id="tab-auditoria" class="tab-btn px-4 py-2 border-b-2 border-transparent text-slate-500 hover:text-slate-700 whitespace-nowrap">
+                    <i class="fa-solid fa-clipboard-check mr-1"></i> Auditoría y Fiscalización
+                </button>
+                <button onclick="switchTab('compras')" id="tab-compras" class="tab-btn px-4 py-2 border-b-2 border-transparent text-slate-500 hover:text-slate-700 whitespace-nowrap">
+                    <i class="fa-solid fa-cart-shopping mr-1"></i> Contrataciones Públicas
+                </button>
+                <button onclick="switchTab('transparencia')" id="tab-transparencia" class="tab-btn px-4 py-2 border-b-2 border-transparent text-slate-500 hover:text-slate-700 whitespace-nowrap">
+                    <i class="fa-solid fa-eye mr-1"></i> Transparencia y Datos
+                </button>
+                <button onclick="switchTab('rh')" id="tab-rh" class="tab-btn px-4 py-2 border-b-2 border-transparent text-slate-500 hover:text-slate-700 whitespace-nowrap">
+                    <i class="fa-solid fa-users-gear mr-1"></i> Recursos Humanos
+                </button>
+            </div>
+
+            <!-- Tab Contents -->
+            <div class="tab-container">
+                <!-- Eje 1: Anticorrupción -->
+                <div id="content-anticorrupcion" class="tab-content block space-y-3">
+                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                        <h4 class="font-semibold text-slate-800 text-sm md:text-base flex items-center gap-2">
+                            <i class="fa-solid fa-book-bookmark text-amber-600"></i> Código de Ética e Integridad (Fracciones XVIII y XXI)
+                        </h4>
+                        <p class="text-xs md:text-sm text-slate-600 mt-1">Emitir el Código de Ética y Reglas de Integridad gubernamentales, capacitando de forma continua a las personas servidoras públicas.</p>
+                    </div>
+                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                        <h4 class="font-semibold text-slate-800 text-sm md:text-base flex items-center gap-2">
+                            <i class="fa-solid fa-gavel text-amber-600"></i> Investigación y Sanciones (Fracción XLIII)
+                        </h4>
+                        <p class="text-xs md:text-sm text-slate-600 mt-1">Investigar conductas irregulares, sancionar faltas administrativas no graves y llevar denuncias por faltas graves ante la Fiscalía Anticorrupción y el TFJA.</p>
+                    </div>
+                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                        <h4 class="font-semibold text-slate-800 text-sm md:text-base flex items-center gap-2">
+                            <i class="fa-solid fa-diagram-project text-amber-600"></i> Coordinación Nacional (Fracciones XXVII y XXVIII)
+                        </h4>
+                        <p class="text-xs md:text-sm text-slate-600 mt-1">Representar al Ejecutivo en el Sistema Nacional Anticorrupción (SNA) y el Sistema Nacional de Fiscalización.</p>
+                    </div>
+                </div>
+
+                <!-- Eje 2: Auditoría -->
+                <div id="content-auditoria" class="tab-content hidden space-y-3">
+                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                        <h4 class="font-semibold text-slate-800 text-sm md:text-base flex items-center gap-2">
+                            <i class="fa-solid fa-calendar-check text-blue-600"></i> Programa Anual de Fiscalización (Fracción X)
+                        </h4>
+                        <p class="text-xs md:text-sm text-slate-600 mt-1">Diseñar y ejecutar auditorías de gabinete, electrónicas e inspecciones directas para asegurar eficiencia y economía en el gasto público.</p>
+                    </div>
+                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                        <h4 class="font-semibold text-slate-800 text-sm md:text-base flex items-center gap-2">
+                            <i class="fa-solid fa-sliders text-blue-600"></i> Regulación de Control Interno (Fracciones II y VI)
+                        </h4>
+                        <p class="text-xs md:text-sm text-slate-600 mt-1">Establecer reglas institucionales de control gubernamental e indicadores de desempeño para todas las dependencias públicas.</p>
+                    </div>
+                </div>
+
+                <!-- Eje 3: Compras Públicas -->
+                <div id="content-compras" class="tab-content hidden space-y-3">
+                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                        <h4 class="font-semibold text-slate-800 text-sm md:text-base flex items-center gap-2">
+                            <i class="fa-solid fa-file-contract text-emerald-600"></i> Normatividad en Licitaciones (Fracciones III y XXX)
+                        </h4>
+                        <p class="text-xs md:text-sm text-slate-600 mt-1">Regular las reglas de adquisiciones, arrendamientos y obras públicas, otorgando acompañamiento preventivo a proyectos estratégicos.</p>
+                    </div>
+                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                        <h4 class="font-semibold text-slate-800 text-sm md:text-base flex items-center gap-2">
+                            <i class="fa-solid fa-store text-emerald-600"></i> Fomento a Mipymes y Contenido Nacional (Fracciones XXXVI y XXXVII)
+                        </h4>
+                        <p class="text-xs md:text-sm text-slate-600 mt-1">Promover la participación de pequeñas y medianas empresas nacionales dentro del catálogo de compras de gobierno.</p>
+                    </div>
+                </div>
+
+                <!-- Eje 4: Transparencia -->
+                <div id="content-transparencia" class="tab-content hidden space-y-3">
+                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                        <h4 class="font-semibold text-slate-800 text-sm md:text-base flex items-center gap-2">
+                            <i class="fa-solid fa-user-shield text-purple-600"></i> Declaraciones Patrimoniales y de Intereses (Fracción XLIV)
+                        </h4>
+                        <p class="text-xs md:text-sm text-slate-600 mt-1">Administrar el registro público de evolución patrimonial y verificar que los servidores públicos no incurran en conflicto de intereses.</p>
+                    </div>
+                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                        <h4 class="font-semibold text-slate-800 text-sm md:text-base flex items-center gap-2">
+                            <i class="fa-solid fa-globe text-purple-600"></i> Transparencia Proactiva y Gobierno Digital (Fracción XIX)
+                        </h4>
+                        <p class="text-xs md:text-sm text-slate-600 mt-1">Publicar datos en formatos abiertos de fácil acceso ciudadano para impulsar el escrutinio público.</p>
+                    </div>
+                </div>
+
+                <!-- Eje 5: Recursos Humanos -->
+                <div id="content-rh" class="tab-content hidden space-y-3">
+                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                        <h4 class="font-semibold text-slate-800 text-sm md:text-base flex items-center gap-2">
+                            <i class="fa-solid fa-vial-circle-check text-indigo-600"></i> Pruebas de Confiabilidad (Fracción XLV)
+                        </h4>
+                        <p class="text-xs md:text-sm text-slate-600 mt-1">Aplica exámenes médicos, toxicológicos, psicológicos y socioeconómicos a puestos clave y de alto riesgo.</p>
+                    </div>
+                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                        <h4 class="font-semibold text-slate-800 text-sm md:text-base flex items-center gap-2">
+                            <i class="fa-solid fa-sitemap text-indigo-600"></i> Servicio Profesional de Carrera (Fracciones XXII y XXIII)
+                        </h4>
+                        <p class="text-xs md:text-sm text-slate-600 mt-1">Administrar y aprobar las estructuras orgánicas gubernamentales y los sistemas de ingreso por mérito.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECCIÓN 3: ÓRGANOS DESCONCENTRADOS Y ESTRUCTURA DE CONTROL ================= -->
+        <section class="bg-white rounded-2xl shadow-md border border-slate-200 p-6 md:p-8 mb-8">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-base">3</span>
+                <h2 class="text-xl md:text-2xl font-bold text-institutional-900">Estructura Operativa y Órganos de Vigilancia</h2>
+            </div>
+            
+            <p class="text-slate-600 text-sm md:text-base mb-6">
+                Para ejercer vigilancia directa en todo el aparato gubernamental, la Secretaría se despliega de manera transversal en todas las Secretarías y Empresas del Estado a través de unidades operativas y representaciones directas (Fracciones XXXIX y XL):
+            </p>
+
+            <div class="space-y-3">
+                <!-- Accordion Item 1 -->
+                <div class="border border-slate-200 rounded-xl overflow-hidden">
+                    <button onclick="toggleAccordion('acc1')" class="w-full bg-slate-50 p-4 text-left font-semibold text-slate-800 flex justify-between items-center text-sm md:text-base hover:bg-slate-100 transition">
+                        <span class="flex items-center gap-2">
+                            <i class="fa-solid fa-building-user text-amber-600"></i>
+                            Órganos Internos de Control (OIC)
+                        </span>
+                        <i id="acc1-icon" class="fa-solid fa-chevron-down text-slate-400"></i>
+                    </button>
+                    <div id="acc1" class="hidden p-4 bg-white border-t border-slate-200 text-xs md:text-sm text-slate-600 space-y-2">
+                        <p><strong>Función:</strong> Son los "ojos y oídos" de la Secretaría dentro de cada dependencia pública. Tienen autonomía jerárquica directa de la Secretaría Anticorrupción.</p>
+                        <p><strong>Tareas principales:</strong> Reciben denuncias de ciudadanos, auditan las operaciones de la dependencia donde están asignados e inician procedimientos disciplinarios contra servidores públicos incumplidos.</p>
+                    </div>
+                </div>
+
+                <!-- Accordion Item 2 -->
+                <div class="border border-slate-200 rounded-xl overflow-hidden">
+                    <button onclick="toggleAccordion('acc2')" class="w-full bg-slate-50 p-4 text-left font-semibold text-slate-800 flex justify-between items-center text-sm md:text-base hover:bg-slate-100 transition">
+                        <span class="flex items-center gap-2">
+                            <i class="fa-solid fa-industry text-amber-600"></i>
+                            Unidades de Responsabilidades en Empresas Productivas del Estado
+                        </span>
+                        <i id="acc2-icon" class="fa-solid fa-chevron-down text-slate-400"></i>
+                    </button>
+                    <div id="acc2" class="hidden p-4 bg-white border-t border-slate-200 text-xs md:text-sm text-slate-600 space-y-2">
+                        <p><strong>Función:</strong> Instancias especializadas designadas para operar en organismos como PEMEX y CFE.</p>
+                        <p><strong>Tareas principales:</strong> Vigilar que las inversiones de gran escala y las contrataciones energéticas se alineen a la legalidad y evitar fugas de capital por corruptelas.</p>
+                    </div>
+                </div>
+
+                <!-- Accordion Item 3 -->
+                <div class="border border-slate-200 rounded-xl overflow-hidden">
+                    <button onclick="toggleAccordion('acc3')" class="w-full bg-slate-50 p-4 text-left font-semibold text-slate-800 flex justify-between items-center text-sm md:text-base hover:bg-slate-100 transition">
+                        <span class="flex items-center gap-2">
+                            <i class="fa-solid fa-user-check text-amber-600"></i>
+                            Comisarios Públicos y Delegados
+                        </span>
+                        <i id="acc3-icon" class="fa-solid fa-chevron-down text-slate-400"></i>
+                    </button>
+                    <div id="acc3" class="hidden p-4 bg-white border-t border-slate-200 text-xs md:text-sm text-slate-600 space-y-2">
+                        <p><strong>Función:</strong> Representantes directos nombrados por el/la Secretario/a ante las entidades de la APF.</p>
+                        <p><strong>Tareas principales:</strong> Supervisar las decisiones de los órganos de gobierno y consejos de administración en organismos descentralizados, asegurando el cumplimiento de metas presupuestales.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECCIÓN 4: RESUMEN SINTÉTICO (PARA ESTUDIO) ================= -->
+        <section class="bg-gradient-to-r from-institutional-900 to-slate-900 rounded-2xl text-white p-6 md:p-8 shadow-xl">
+            <h3 class="text-lg md:text-xl font-bold text-amber-400 mb-2 flex items-center gap-2">
+                <i class="fa-solid fa-lightbulb"></i> Conclusión y Síntesis para Exposición
+            </h3>
+            <p class="text-slate-200 text-xs md:text-sm leading-relaxed">
+                En resumen, la <strong>Secretaría Anticorrupción y Buen Gobierno</strong> actúa como la entidad fiscalizadora preventiva y correctiva del Gobierno Federal. Su objetivo no es solo castigar faltas, sino prevenir la corrupción mediante el diseño de códigos normativos, evaluación de riesgos de personal, digitalización de compras públicas e impulso a la participación ciudadana en el control de las obras y servicios públicos.
+            </p>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 mt-10 py-4 no-print">
+        <div class="max-w-5xl mx-auto px-4 text-center text-slate-400 text-xs">
+            Desarrollado para la entrega escolar de Tarea 1 • Basado en el marco legal vigente de la LOAPF
+        </div>
+    </footer>
+
+    <!-- Interactive Scripts -->
+    <script>
+        // Tab Switcher Logic
+        function switchTab(tabId) {
+            // Hide all contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+                content.classList.remove('block');
+            });
+            // Reset button states
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-amber-600', 'text-amber-600', 'font-bold');
+                btn.classList.add('border-transparent', 'text-slate-500');
+            });
+
+            // Show selected tab content
+            const activeContent = document.getElementById('content-' + tabId);
+            if(activeContent) {
+                activeContent.classList.remove('hidden');
+                activeContent.classList.add('block');
+            }
+
+            // Highlight button
+            const activeBtn = document.getElementById('tab-' + tabId);
+            if(activeBtn) {
+                activeBtn.classList.add('border-amber-600', 'text-amber-600', 'font-bold');
+                activeBtn.classList.remove('border-transparent', 'text-slate-500');
+            }
+        }
+
+        // Accordion Toggle Logic
+        function toggleAccordion(accId) {
+            const body = document.getElementById(accId);
+            const icon = document.getElementById(accId + '-icon');
+            
+            if (body.classList.contains('hidden')) {
+                body.classList.remove('hidden');
+                icon.classList.remove('fa-chevron-down');
+                icon.classList.add('fa-chevron-up');
+            } else {
+                body.classList.add('hidden');
+                icon.classList.remove('fa-chevron-up');
+                icon.classList.add('fa-chevron-down');
+            }
+        }
+
+        // Cover Edit Panel Toggle
+        function toggleCoverEdit() {
+            const panel = document.getElementById('cover-edit-panel');
+            panel.classList.toggle('hidden');
+        }
+
+        // Save Custom Details to Cover Page
+        function saveCoverDetails() {
+            const student = document.getElementById('input-student').value.trim();
+            const subject = document.getElementById('input-subject').value.trim();
+            const teacher = document.getElementById('input-teacher').value.trim();
+            const date = document.getElementById('input-date').value.trim();
+            const logo = document.getElementById('input-logo').value.trim();
+
+            if (student) document.getElementById('disp-student').textContent = student;
+            if (subject) document.getElementById('disp-subject').textContent = subject;
+            if (teacher) document.getElementById('disp-teacher').textContent = teacher;
+            if (date) document.getElementById('disp-date').textContent = date;
+            if (logo) document.getElementById('custom-logo').src = logo;
+
+            toggleCoverEdit();
+        }
+
+        // Trigger Clean Window Print for PDF Export
+        function exportPDF() {
+            // Expand all accordions and tab contents before printing for full view
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('hidden'));
+            document.querySelectorAll('[id^="acc"]').forEach(a => a.classList.remove('hidden'));
+
+            window.print();
+        }
+    </script>
+</body>
+</html>
